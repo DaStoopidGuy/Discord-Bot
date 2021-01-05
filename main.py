@@ -4,18 +4,18 @@ from discord.ext import commands
 import random
 
 # The Command Prefix
-commandPrefix = ";"
+COMMAND_PREFIX = ">"
 
-bot = commands.Bot(command_prefix=";")
+bot = commands.Bot(command_prefix=COMMAND_PREFIX)
 logFile = open("data/log.txt", "a")
 
 def log(logMsg):
+    print(f"[{datetime.datetime.now()}] {logMsg}")
     logFile.write(f"[{datetime.datetime.now()}] {logMsg}\n")
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.online, activity=discord.Game(f"Listening for {commandPrefix}help | prefix is \"{commandPrefix}\" "))
-    print("Bot is ready.")
+    await bot.change_presence(status=discord.Status.online, activity=discord.Game(f"Listening for {COMMAND_PREFIX}help | prefix is \"{COMMAND_PREFIX}\" "))
     log("Bot is ready.")
 
 @bot.event
@@ -30,11 +30,12 @@ async def on_message(message):
     content = message.content 
     channel = message.channel 
     user = message.author.name 
-    userID = message.author.id 
+    userID = message.author.id
+
 
     # if anyone says the stuff included in this list the bot will reply
     badWords = ["fuck", "f*ck"]
-    if not user == "arkydarky":
+    if not user.lower() == "arkydarky":
         for badWord in badWords:
             if badWord in content.lower():
                 await channel.send(f"<@{userID}> 😠")
@@ -67,7 +68,6 @@ async def eightball(ctx, *, arg):
     response = f"Question: {arg}\nAnswer: {random.choice(answers)}"
     await ctx.send(response)
     # print and log stuff
-    print(f"8ball command has been used.\n{response}")
     log("8ball command has been used.")
 
 with open('data/token.txt','r') as my_token:
